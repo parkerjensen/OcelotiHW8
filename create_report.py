@@ -1,8 +1,9 @@
 #! /usr/bin/env pythons
 import sys
-from dbconfig imoprt read_db_config
+from dbconfig import read_db_config
 import mysql.connector
 from mysql.connector import Error, MySQLConnection
+import datetime
 
 def convertStartDate(date):
     """
@@ -51,7 +52,7 @@ def createReport(startDate, endDate):
     db_config = read_db_config()
     try:
         print("Connecting to MySQL database...")
-        conn = MySQLConnectoin(**db_config)
+        conn = MySQLConnection(**db_config)
         
         if conn.is_connected():
             print("Connection is established")
@@ -60,13 +61,30 @@ def createReport(startDate, endDate):
             return ""
 
         cursor = conn.cursor()
-        curosr.execute("
+        cursor.execute("SELECT * FROM trans t JOIN trans_line tl ON tl.trans_id = t.trans_id JOIN products p ON p.prod_num = tl.prod_num" )
+        
+        rows = cursor.fetchall()
+
+        if cursor.rowcount == 0:
+            print("No transactions in dates")
+            exit(2)
+
+        for row in rows:
+            print(row[1])
+    except Error as error:
+        print(error)
+    
+    finally:
+        cursor.close()
+        conn.close()
+        print("Connection closed")
+
 
 def main():
     """
     Test Function
     """
-    print(convertDate("20160101"))
+    createReport(convertStartDate("20160101"), convertEndDate("20161231"))
     return
 
 if __name__=="__main__":
