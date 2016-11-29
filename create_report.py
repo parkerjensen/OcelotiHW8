@@ -61,7 +61,7 @@ def createReport(startDate, endDate):
             return ""
 
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM trans t JOIN trans_line tl ON tl.trans_id = t.trans_id JOIN products p ON p.prod_num = tl.prod_num" )
+        cursor.execute("SELECT t.trans_id, trans_date, card_num, qty, amt, p.prod_desc FROM trans t JOIN trans_line tl ON tl.trans_id = t.trans_id JOIN products p ON p.prod_num = tl.prod_num" )
         
         rows = cursor.fetchall()
 
@@ -70,7 +70,18 @@ def createReport(startDate, endDate):
             exit(2)
 
         for row in rows:
-            print(row[1])
+            transID = str(row[0])
+            date = row[1]
+            card = row[2]
+            prod1qty = str(int(row[3]))
+            prod1amt = str("{0:.2f}".format(row[4]))
+            prod1amt = prod1amt.replace(".","")
+            prod1desc = row[5]
+            #d = datetime.datetime.strptime(date, '%Y-%m-%d %hh:%mm:%ss')
+            date = date.strftime('%Y%m%d%H%M')
+            transaction = '{:5s}{:12s}{:6s}{:2s}{:6s}{:10s}'.format(transID.zfill(5), date, card[-6:], prod1qty.zfill(2), prod1amt.zfill(6), prod1desc)
+            print(transaction)
+
     except Error as error:
         print(error)
     
