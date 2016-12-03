@@ -42,3 +42,32 @@ helpFun()
 		exit
 	fi
 }
+
+#Call help function with first parameter
+helpFun "$1"
+
+#Start getopts
+while getopts ":u:p:e:f:t:" opt
+do
+	case $opt in
+		u)
+			USER=$OPTARG
+			;;
+		p)
+			PASSWD=$OPTARG
+			;;
+		e)
+			EMAIL=$OPTARG
+			;;
+		f)
+			BEGDATE=$OPTARG
+			;;
+		t)
+			ENDDATE=$OPTARG
+			;;
+		\?)
+			echo "Invalid argument, exiting..."
+			exit 1
+			;;
+	esac
+done
