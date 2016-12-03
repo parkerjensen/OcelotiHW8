@@ -22,7 +22,7 @@
 #Declaration of usage function
 usageState()
 {
-	echo "Usage: ./run_report.sh -u <FTPuser> -p <FTPpw> -e <email> -f <begDate> -t <endDate>"
+	echo "Usage: ./run_report.sh -u <FTPuser> -p <FTPpw> -e <email> -f <begDate YYYYMMDD> -t <endDate YYYYMMDD>"
 	echo "All arguments are REQUIRED"
 }
 
@@ -36,8 +36,8 @@ helpFun()
 		echo "-u specifies the FTP user"
 		echo "-p specifies the FTP user's password"
 		echo "-e specifies the user's email"
-		echo "-f specifies the beginning date"
-		echo "-t specifies the end date"
+		echo "-f specifies the beginning date (FORMAT: YYYYMMDD)"
+		echo "-t specifies the end date (FORMAT: YYYYMMDD)"
 		echo "With no arguments it provides a usage statement"
 		exit
 	fi
@@ -78,3 +78,17 @@ then
 	usageState
 	exit 1
 fi
+
+#Call create_report.py
+python3 create_report.py "$BEGDATE" "$ENDDATE"
+
+#Check exit code
+if [[ $? -eq 0 ]]
+then
+	echo "Successfully created report"
+else
+	echo "Create report failed, please check format of dates. Exiting..."
+	exit 1
+fi
+
+
