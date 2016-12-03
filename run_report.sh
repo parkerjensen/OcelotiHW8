@@ -71,3 +71,10 @@ do
 			;;
 	esac
 done
+
+#Check for required arguments
+if [[ ! "$USER" || ! "$PASSWD" || ! "$EMAIL" || ! "$BEGDATE" || ! "$ENDDATE" ]]
+then
+	usageState
+	exit 1
+fi
