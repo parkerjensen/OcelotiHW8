@@ -91,4 +91,5 @@ else
 	exit 1
 fi
 
-
+#zip file
+zip -r "company_trans.zip" "company_trans_""$BEGDATE""_""$ENDDATE"".dat"
