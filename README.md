@@ -21,3 +21,9 @@ create_report.py
   create_report.py should be called like the example given:
     python3 create_report.py <startDate> <endDate>
     EX: python3 create_report.py 20160123 20160435
+
+ftp_file.sh
+	This file runs the ftp script
+
+run_report.sh
+	This file is the wrapper file and calls create_report.py
