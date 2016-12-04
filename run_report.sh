@@ -88,16 +88,9 @@ then
 	echo "Successfully created report"
 	#zip file
 	zip -r "company_trans.zip" "company_trans_""$BEGDATE""_""$ENDDATE"".dat"
-	#Connect to FTP
-	HOST='137.190.19.103'
-	echo "Using "$USER"'s FTP account"
-	ftp -inv $HOST << EOF
-	user $USER $PASSWD
-	cd . 
-	put company_trans.zip
-	bye
-EOF
+	bash ftp_file.sh $USER $PASSWD company_trans.zip
 elif [[ $? -eq -1 ]]
+then
 	mail -s "The create_report program exited with code -1" $EMAIL <<< "Bad Input parameters $BEGDATE $ENDDATE"
 	echo "Email sent to $EMAIL"
 	exit 1
@@ -107,3 +100,13 @@ else
 	exit 1
 fi
 
+if [[ $? -eq 0 ]]
+	then
+		mail -s "Successfully transfered file to 137.190.19.103" $EMAIL <<< "Successfully created a transaction report from $BEGDATE to $ENDDATE"
+		echo "Your output file is company_trans.zip"
+		echo "Email sent to $EMAIL"
+		exit 0
+	else
+		echo "FTP to 137.190.19.103 failed. Exiting..."
+		exit 1
+fi
