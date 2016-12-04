@@ -86,10 +86,24 @@ python3 create_report.py "$BEGDATE" "$ENDDATE"
 if [[ $? -eq 0 ]]
 then
 	echo "Successfully created report"
+	#zip file
+	zip -r "company_trans.zip" "company_trans_""$BEGDATE""_""$ENDDATE"".dat"
+	#Connect to FTP
+	HOST='137.190.19.103'
+	echo "Using "$USER"'s FTP account"
+	ftp -inv $HOST << EOF
+	user $USER $PASSWD
+	cd . 
+	put company_trans.zip
+	bye
+EOF
+elif [[ $? -eq -1 ]]
+	mail -s "The create_report program exited with code -1" $EMAIL <<< "Bad Input parameters $BEGDATE $ENDDATE"
+	echo "Email sent to $EMAIL"
+	exit 1
 else
-	echo "Create report failed, please check format of dates. Exiting..."
+	mail -s "The create_report program exited with code -2" $EMAIL <<< "No transactions available from $BEGDATE to $ENDDATE"
+	echo "Email sent to $EMAIL"
 	exit 1
 fi
 
-#zip file
-zip -r "company_trans.zip" "company_trans_""$BEGDATE""_""$ENDDATE"".dat"
